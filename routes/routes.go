@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"example/spudify/controllers"
 	"net/http"
 
 	"github.com/gin-gonic/contrib/static"
@@ -8,16 +9,16 @@ import (
 )
 
 func Routes(router *gin.Engine) {
-	// Frontend Routes
+	// Frontend routes
 	router.Use(static.Serve("/", static.LocalFile("./views/js", true)))
 
-	// API Routes
+	// API routes
 	api := router.Group("/api")
 	{
 		api.GET("/health_check", healthCheck)
-		api.GET("/artist/:id", getArtistByID)
-		api.GET("/album/:id", getAlbumByID)
-		api.GET("/song/:id", getSongByID)
+		api.GET("/artists/:id", getArtistByID)
+		api.GET("/albums/:id", getAlbumByID)
+		api.GET("/songs/:id", getSongByID)
 	}
 }
 
@@ -27,8 +28,14 @@ func healthCheck(c *gin.Context) {
 
 func getArtistByID(c *gin.Context) {
 	id := c.Param("id")
+	artist, err := controllers.GetArtistByID(id)
+
 	c.Header("Content-Type", "application/json")
-	c.JSON(http.StatusOK, id)
+	if err != nil {
+		c.JSON(http.StatusOK, "")
+	} else {
+		c.JSON(http.StatusOK, artist)
+	}
 }
 
 func getAlbumByID(c *gin.Context) {
