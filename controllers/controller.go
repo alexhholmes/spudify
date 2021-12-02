@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	. "example/spudify/models"
 	"github.com/go-pg/pg/v10"
 )
 
@@ -13,13 +14,6 @@ func InitDB(dbConnection *pg.DB) {
 	db = dbConnection
 }
 
-type Artist struct {
-	ID        string    `json:"id"'`
-	Name      string    `json:"name"`
-	Age       int       `json:"age"`
-	Bio       string    `json:"bio"`
-}
-
 func GetArtistByID(id string) (*Artist, error) {
 	artist := new(Artist)
 	err := db.Model(artist).
@@ -28,21 +22,81 @@ func GetArtistByID(id string) (*Artist, error) {
 	return artist, err
 }
 
-/*
-type Song struct {
-	ID        string    `json:"id"'`
-	Name      string    `json:"name"`
-	Genre     string    `json:"genre"`
-	Duration  int       `json:"duration"`
-	ArtistID  string    `json:"artist_id"`
-	Artist    string    `json:"artist"`
-	AlbumID   string    `json:"album_id"`
-	Album     string    `json:"album"`
+func GetArtistAlbums(artistID string) ([]Album, error) {
+	var albums []Album
+	err := db.Model(&albums).
+		Where("artist_id = ?", artistID).
+		Select()
+	return albums, err
 }
 
-func getSongByID(db *pg.DB) error {
-	opts := orm.Query{
+func GetArtistPopularSongs(id string) ([]Song, error) {
+	var songs []Song
+	err := db.Model(&songs).
+		Where("artist_id = ?", id).
+		Order("plays DESC").
+		Limit(5).
+		Select()
+	return songs, err
+}
 
+func GetAlbumByID(id string) (*Album, error) {
+	album := new(Album)
+	err := db.Model(album).
+		Where("id = ?", id).
+		Select()
+	return album, err
+}
+
+func GetAlbumSongs(albumID string) ([]Song, error) {
+	var songs []Song
+	err := db.Model(&songs).
+		Where("album_id = ?", albumID).
+		Select()
+	return songs, err
+}
+
+func GetSongByID(id string) (*Song, error) {
+	song := new(Song)
+	err := db.Model(song).
+		Where("id = ?", id).
+		Select()
+	return song, err
+}
+
+func GetPlaylistByID(id string) (*Playlist, error) {
+	playlist := new(Playlist)
+
+	err := db.Model(playlist).
+		Where("id = ?", id).
+		Select()
+	return playlist, err
+}
+
+func GetPlaylistItems(id string) ([]Song, error) {
+	// Only needed in this func
+	type SongsPlaylists struct {
+		SongID      string    `json:"song_id"'`
+		PlaylistID  string    `json:"playlist_id"`
 	}
+
+	var songs []Song
+	// Select song IDs that match the playlist ID
+	songIDs := db.Model((*SongsPlaylists)(nil)).
+		ColumnExpr("song_id").
+		Where("playlist_id = ?", id)
+	// Select songs that are in the subquery
+	err := db.Model(&songs).
+		Where("song_id IN (?)", songIDs).
+		Select()
+
+	return songs, err
 }
- */
+
+func AddSongsToPlaylist(user_id string, playlist_id string, song_ids []string) {
+
+}
+
+func DeleteSongsFromPlaylist(user_id string, playlist_id string, song_ids []string) {
+
+}

@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// Init database connection and pass ref to controller
-	db := config.ConnectDB()
+	db := configs.ConnectDB()
 	controllers.InitDB(db)
 
 	// Init router and pass to route handlers & endpoints
