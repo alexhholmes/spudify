@@ -42,10 +42,12 @@ CREATE TABLE users (
     username varchar(24) NOT NULL,
     password varchar(24) NOT NULL,
     num_hours_listened int NOT NULL,
-    num_skips int NOT NULL
+    num_skips int NOT NULL,
+    session varchar(24)
 );
 
 CREATE INDEX ON users(username);
+CREATE INDEX ON users(session_id);
 
 CREATE TABLE playlists (
     id varchar(22),
@@ -89,14 +91,13 @@ CREATE INDEX ON liked_songs(user_id);
 CREATE INDEX ON liked_songs(song_id);
 
 -- Initial DB data
+
+-- artists TABLE
 INSERT INTO artists
 VALUES ('p7ddcTyzvAtXkxkq6NyQT', 'Bob Joe', 21, 'I like music');
-
 INSERT INTO artists
 VALUES ('pf6CtmEXNMyFxMSzrPDma', 'Billy Joe', 23, 'I dislike music');
-
 INSERT INTO artists
 VALUES ('3npJyksSq8DzAXyJR9Yq3', 'Joe Lewis', 27, 'I like most music');
-
 INSERT INTO artists
 VALUES ('uvkrapMyTdzj2wk1SRU5L', 'Sally Bob', 22, 'I like some music');

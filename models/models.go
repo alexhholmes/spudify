@@ -30,6 +30,7 @@ type User struct {
 	Password          string    `json:"password"`
 	NumHoursListened  int       `json:"num_hours_listened"`
 	NumSkips          int       `json:"num_skips"`
+	Session           string    `json:"session"`
 }
 
 type Playlist struct {

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	. "example/spudify/models"
 	"github.com/go-pg/pg/v10"
 )
@@ -12,6 +13,31 @@ func InitDB(dbConnection *pg.DB) {
 		panic("InitDB() nil connection")
 	}
 	db = dbConnection
+}
+
+func GetUserPassword(username string) (string, error) {
+	var password string
+	err := db.Model((*User)(nil)).
+		Column("password").
+		Where("username = ?", username).
+		Select(&password)
+	return password, err
+}
+
+func UpdateUserSession(username string, session string) error {
+	_, err := db.Model((*User)(nil)).
+		Set("session = ?", session).
+		Where("username = ?", username).
+		Update()
+	return err
+}
+
+func ClearUserSession(session string) error {
+	_, err := db.Model((*User)(nil)).
+		Set("session = ?", sql.NullString{}).
+		Where("session = ?", session).
+		Update()
+	return err
 }
 
 func GetArtistByID(id string) (*Artist, error) {
