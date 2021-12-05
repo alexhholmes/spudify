@@ -1,20 +1,33 @@
 package main
 
 import (
-	"example/spudify/configs"
-	"example/spudify/controllers"
-	"example/spudify/routes"
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"example/spudify/app"
+	"example/spudify/controllers"
+	"github.com/spf13/viper"
 )
 
-func main() {
-	// Init database connection and pass ref to controller
-	db := configs.ConnectDB()
-	controllers.InitDB(db)
+func init() {
+	viper.SetConfigName("config")
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(".")
 
-	// Init router and pass to route handlers & endpoints
-	router := gin.Default()
-	routes.Routes(router)
-	log.Fatal(router.Run("localhost:8080"))
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Panicf("Failed to read config file: %s", err)
+	}
+}
+
+func main() {
+	a := app.App{}
+	a.Initialize(viper.GetString("DB.address"),
+		viper.GetString("DB.port"),
+		viper.GetString("DB.username"),
+		viper.GetString("DB.password"),
+		viper.GetString("DB.db_name"))
+	controllers.InitDB(a.DB)
+
+	a.Run(viper.GetString("Server.address"),
+		viper.GetString("Server.port"))
 }

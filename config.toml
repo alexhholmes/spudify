@@ -1,0 +1,10 @@
+[DB]
+address = "localhost"
+port = "5432"
+username = "postgres"
+password = "password"
+db_name = "spudify"
+
+[Server]
+address = "localhost"
+port = "8080"

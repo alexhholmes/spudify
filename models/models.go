@@ -1,21 +1,21 @@
 package models
 
 type Artist struct {
-	ID        string    `json:"id"'`
+	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Age       int       `json:"age"`
 	Bio       string    `json:"bio"`
 }
 
 type Album struct {
-	ID        string    `json:"id"'`
+	ID        string    `json:"id"`
 	Title     string    `json:"title"`
 	Genre     string    `json:"genre"`
 	ArtistID  string	`json:"artist_id"`
 }
 
 type Song struct {
-	ID        string    `json:"id"'`
+	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Genre     string    `json:"genre"`
 	Plays     int       `json:"plays"`
@@ -34,7 +34,7 @@ type User struct {
 }
 
 type Playlist struct {
-	ID          string    `json:"id"'`
+	ID          string    `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 }

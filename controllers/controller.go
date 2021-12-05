@@ -90,17 +90,33 @@ func GetSongByID(id string) (*Song, error) {
 	return song, err
 }
 
-func GetPlaylistByID(id string) (*Playlist, error) {
-	playlist := new(Playlist)
+func GetCurrentUserPlaylists(sessionID string) ([]Playlist, error) {
+	userID := db.Model((*User)(nil)).
+		Column("id").
+		Where("session = ?", sessionID)
 
-	err := db.Model(playlist).
-		Where("id = ?", id).
+	var playlists []Playlist
+	err := db.Model(&playlists).
+		Where("owner_id IN (?)", userID).
 		Select()
-	return playlist, err
+
+	return playlists, err
 }
 
+func GetCurrentUserFollowing(sessionID string) ([]Artist, error) {
+	userID := db.Model((*User)(nil)).
+		Column("id").
+		Where("session = ?", sessionID)
+
+	var artists []Artist
+	err := db.Model(&artists).
+		Where("owner_id IN (?)", userID).
+		Select()
+
+	return artists, err
+}
 func GetPlaylistItems(id string) ([]Song, error) {
-	// Only needed in this func
+	// For songs_playlists table
 	type SongsPlaylists struct {
 		SongID      string    `json:"song_id"'`
 		PlaylistID  string    `json:"playlist_id"`
@@ -119,10 +135,10 @@ func GetPlaylistItems(id string) ([]Song, error) {
 	return songs, err
 }
 
-func AddSongsToPlaylist(user_id string, playlist_id string, song_ids []string) {
+func AddSongsToPlaylist(userID, playlistID string, songIDs []string) {
 
 }
 
-func DeleteSongsFromPlaylist(user_id string, playlist_id string, song_ids []string) {
+func DeleteSongsFromPlaylist(userID, playlistID string, songIDs []string) {
 
 }

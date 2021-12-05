@@ -46,8 +46,8 @@ CREATE TABLE users (
     session varchar(24)
 );
 
-CREATE INDEX ON users(username);
-CREATE INDEX ON users(session_id);
+CREATE UNIQUE INDEX ON users(username);
+CREATE UNIQUE INDEX ON users(session_id);
 
 CREATE TABLE playlists (
     id varchar(22),
