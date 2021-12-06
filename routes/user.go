@@ -42,16 +42,50 @@ func getCurrentUserPlaylists(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
 }
 
-func getPlaylistByID(c *gin.Context) {
+func createPlaylist(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	session, _ := c.Cookie("session")
+
+	err := controllers.CreatePlaylist(session)
+	if err != nil {
+		c.JSON(http.StatusOK, "")
+		return
+	}
+	c.JSON(http.StatusBadRequest, "")
+}
+
+func deletePlaylist(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	c.JSON(http.StatusOK, "")
+}
+
+func getPlaylistSongs(c *gin.Context) {
 	id := c.Param("id")
 	songs, err := controllers.GetPlaylistItems(id)
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusBadRequest, "")
 	} else {
 		c.JSON(http.StatusOK, songs)
 	}
+}
+
+func addSongToPlaylist(c *gin.Context) {
+	id := c.Param("id")
+	songID := c.Param("song_id")
+	err := controllers.AddSongToPlaylist(id, songID)
+
+	c.Header("Content-Type", "application/json")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "")
+	} else {
+		c.JSON(http.StatusOK, "")
+	}
+}
+
+func deleteSongFromPlaylist(c *gin.Context) {
+	c.JSON(http.StatusOK, "")
 }
 
 func getCurrentUserFollowing(c *gin.Context) {
@@ -69,8 +103,8 @@ func getCurrentUserFollowing(c *gin.Context) {
 func followArtist(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
-	session, _ := c.Cookie("session")
 	artistID := c.Param("id")
+	session, _ := c.Cookie("session")
 	err := controllers.FollowArtist(session, artistID)
 	if err != nil {
 		c.JSON(http.StatusOK, "")
@@ -81,13 +115,5 @@ func followArtist(c *gin.Context) {
 
 func unfollowArtist(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-
-	session, _ := c.Cookie("session")
-	artistID := c.Param("id")
-	err := controllers.UnfollowArtist(session, artistID)
-	if err != nil {
-		c.JSON(http.StatusOK, "")
-		return
-	}
-	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
+	c.JSON(http.StatusOK, "")
 }

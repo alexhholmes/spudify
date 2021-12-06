@@ -24,7 +24,7 @@ CREATE TABLE songs (
     PRIMARY KEY (id),
     name varchar(64) NOT NULL,
     genre varchar(64),
-    plays int NOT NULL,
+    plays int,
     duration int NOT NULL,
     artist_id varchar(22) NOT NULL,
     FOREIGN KEY (artist_id) REFERENCES artists(id),
@@ -53,7 +53,6 @@ CREATE TABLE playlists (
     PRIMARY KEY (id),
     name varchar(24) NOT NULL,
     description varchar(300),
-    duration int,
     owner_id varchar(22),
     FOREIGN KEY (owner_id) REFERENCES users(id)
 );
@@ -84,11 +83,11 @@ CREATE INDEX ON artist_followers(artist_id);
 -- Top songs
 CREATE VIEW v_top_songs AS
     SELECT * FROM songs
-    ORDER plays DESC
+    ORDER BY plays DESC
     LIMIT 25;
 
 -- Top 5 songs for each artist
-CREATE VIEW v_top_songs_each_artist
+CREATE VIEW v_top_songs_each_artist AS
     SELECT id,
        name,
        genre,

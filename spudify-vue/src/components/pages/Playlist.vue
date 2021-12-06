@@ -39,7 +39,7 @@ export default {
   },
   mounted() {
 
-    fetch(`/playlist/${this.playlist.id}`, {headers: {}})
+    fetch(`localhost/playlist/${this.playlist.id}`, {headers: {}})
         .then(response => response.json())
         .then(data => {
           this.songs = data;

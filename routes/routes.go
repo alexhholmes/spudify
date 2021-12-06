@@ -17,11 +17,11 @@ func Routes(router *gin.Engine) {
 		api.POST("/login", login)
 
 		api.GET("/me/playlists", getCurrentUserPlaylists)
-		api.POST("/me/playlists", createPlaylist)
-		api.DELETE("/me/playlists", deletePlaylist)
-		api.GET("/playlist/:id", getPlaylistByID)
-		api.PUT("/playlist/:id", addSongToPlaylist)
-		api.DELETE("/playlist/:id", deleteSongFromPlaylist)
+		api.POST("/me/playlists/:id", createPlaylist)
+		api.DELETE("/me/playlists/:id", deletePlaylist)
+		api.GET("/playlist/:id", getPlaylistSongs)
+		api.POST("/playlist/:id/song/:song_id", addSongToPlaylist)
+		api.DELETE("/playlist/:id/song/:song_id", deleteSongFromPlaylist)
 
 		api.GET("/me/following", getCurrentUserFollowing)
 		api.POST("/me/following/:id", followArtist)

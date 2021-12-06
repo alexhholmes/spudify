@@ -1,33 +1,35 @@
 package routes
 
 import (
+	"net/http"
+	"strconv"
+
 	"example/spudify/controllers"
 	"example/spudify/models"
 	"github.com/gin-gonic/gin"
 	gonanoid "github.com/matoous/go-nanoid/v2"
-	"net/http"
-	"strconv"
 )
 
-import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-	gonanoid "github.com/matoous/go-nanoid/v2"
-)
+func verifyAdmin(token string) bool {
+	return token == "password"
+}
 
 func createArtist(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	if !verifyAdmin(c.PostForm("token")) {
+		c.JSON(http.StatusUnauthorized, "")
+	}
+
 	id, _ := gonanoid.New()
-	name := c.Param("name")
-	bio := c.Param("bio")
+	name := c.PostForm("name")
+	bio := c.PostForm("bio")
 	artist := models.Artist{
 		ID:   id,
 		Name: name,
 		Bio:  bio,
 	}
 
-	err := controllers.CreateAlbum(artist)
-	c.Header("Content-Type", "application/json")
+	err := controllers.CreateArtist(artist)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "")
 		return
@@ -36,10 +38,15 @@ func createArtist(c *gin.Context) {
 }
 
 func createAlbum(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	if !verifyAdmin(c.PostForm("token")) {
+		c.JSON(http.StatusUnauthorized, "")
+	}
+
 	id, _ := gonanoid.New()
-	title := c.Param("title")
-	genre := c.Param("genre")
-	artistID := c.Param("artist_id")
+	title := c.PostForm("title")
+	genre := c.PostForm("genre")
+	artistID := c.PostForm("artist_id")
 	album := models.Album{
 		ID:       id,
 		Title:    title,
@@ -49,7 +56,6 @@ func createAlbum(c *gin.Context) {
 
 
 	err := controllers.CreateAlbum(album)
-	c.Header("Content-Type", "application/json")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "")
 		return
@@ -58,12 +64,17 @@ func createAlbum(c *gin.Context) {
 }
 
 func createSong(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	if !verifyAdmin(c.PostForm("token")) {
+		c.JSON(http.StatusUnauthorized, "")
+	}
+
 	id, _ := gonanoid.New()
-	name := c.Param("name")
-	genre := c.Param("genre")
-	duration, err := strconv.Atoi(c.Param("duration"))
-	artistID := c.Param("artist_id")
-	albumID := c.Param("album_id")
+	name := c.PostForm("name")
+	genre := c.PostForm("genre")
+	duration, err := strconv.Atoi(c.PostForm("duration"))
+	artistID := c.PostForm("artist_id")
+	albumID := c.PostForm("album_id")
 	song := models.Song{
 		ID:       id,
 		Name:     name,
@@ -79,8 +90,7 @@ func createSong(c *gin.Context) {
 		return
 	}
 
-	err := controllers.CreateSong(song)
-	c.Header("Content-Type", "application/json")
+	err = controllers.CreateSong(song)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "")
 		return
