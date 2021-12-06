@@ -122,10 +122,30 @@ func GetCurrentUserFollowing(sessionID string) ([]Artist, error) {
 
 	return artists, err
 }
+
+func FollowArtist(sessionID, artistID string) error {
+	type ArtistFollowers struct {
+		UserID      string    `json:"user_id"`
+		ArtistID    string    `json:"artist_id"`
+	}
+
+	userID := db.Model((*User)(nil)).
+		Column("id").
+		Where("session = ?", sessionID).
+		Select()
+
+	model = ArtistFollowers{
+		UserID:   userID,
+		ArtistID: artistID,
+	}
+	err := db.Model().Insert()
+
+}
+
 func GetPlaylistItems(id string) ([]Song, error) {
 	// For songs_playlists table
 	type SongsPlaylists struct {
-		SongID      string    `json:"song_id"'`
+		SongID      string    `json:"song_id"`
 		PlaylistID  string    `json:"playlist_id"`
 	}
 

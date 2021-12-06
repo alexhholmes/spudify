@@ -30,24 +30,6 @@ func login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Login successful"})
 }
 
-func logout(c *gin.Context) {
-	c.Header("Content-Type", "application/json")
-	// Get current cookie and clear it
-	cookie, _ := c.Cookie("session")
-	c.SetCookie("session", "", -1, "/", "localhost", false, true)
-
-	// Clear cookie from datastore
-	err := controllers.ClearUserSession(cookie)
-	if err != nil {
-		log.Printf("Successful logout attempt from session:%s", cookie)
-		c.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
-		return
-	}
-
-	log.Printf("Failed logout attempt from session:%s", cookie)
-	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
-}
-
 func getCurrentUserPlaylists(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
@@ -72,7 +54,6 @@ func getPlaylistByID(c *gin.Context) {
 	}
 }
 
-
 func getCurrentUserFollowing(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
@@ -80,6 +61,32 @@ func getCurrentUserFollowing(c *gin.Context) {
 	content, err := controllers.GetCurrentUserFollowing(session)
 	if err != nil {
 		c.JSON(http.StatusOK, content)
+		return
+	}
+	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
+}
+
+func followArtist(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+
+	session, _ := c.Cookie("session")
+	artistID := c.Param("id")
+	err := controllers.FollowArtist(session, artistID)
+	if err != nil {
+		c.JSON(http.StatusOK, "")
+		return
+	}
+	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
+}
+
+func unfollowArtist(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+
+	session, _ := c.Cookie("session")
+	artistID := c.Param("id")
+	err := controllers.UnfollowArtist(session, artistID)
+	if err != nil {
+		c.JSON(http.StatusOK, "")
 		return
 	}
 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})

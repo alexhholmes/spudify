@@ -15,7 +15,6 @@ func Routes(router *gin.Engine) {
 		api.GET("/health_check", healthCheck)
 
 		api.POST("/login", login)
-		api.GET("/logout", logout)
 
 		api.GET("/me/playlists", getCurrentUserPlaylists)
 		api.POST("/me/playlists", createPlaylist)
