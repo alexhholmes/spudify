@@ -42,7 +42,7 @@ CREATE TABLE users (
     password varchar(24) NOT NULL,
     num_hours_listened int NOT NULL,
     num_skips int NOT NULL,
-    session varchar(24)
+    session varchar(22)
 );
 
 CREATE UNIQUE INDEX ON users(username);
@@ -53,6 +53,7 @@ CREATE TABLE playlists (
     PRIMARY KEY (id),
     name varchar(24) NOT NULL,
     description varchar(300),
+    duration int,
     owner_id varchar(22),
     FOREIGN KEY (owner_id) REFERENCES users(id)
 );
@@ -78,6 +79,37 @@ CREATE TABLE artist_followers (
 
 CREATE INDEX ON artist_followers(user_id);
 CREATE INDEX ON artist_followers(artist_id);
+
+-- Views
+-- Top songs
+CREATE VIEW v_top_songs AS
+    SELECT * FROM songs
+    ORDER plays DESC
+    LIMIT 25;
+
+-- Top 5 songs for each artist
+CREATE VIEW v_top_songs_each_artist
+    SELECT id,
+       name,
+       genre,
+       plays,
+       duration,
+       artist_id,
+       album_id
+    FROM (
+         SELECT id,
+                name,
+                genre,
+                plays,
+                duration,
+                artist_id,
+                album_id,
+                row_number() OVER (
+                    PARTITION BY artist_id ORDER BY plays DESC
+                ) as song_rank
+         FROM songs
+        ) ranks
+    WHERE song_rank <= 5;
 
 -- Initial DB data
 INSERT INTO artists (id, name, bio) VALUES ('01aC2ikO4Xgb2LUpf9JfKp', 'Gary Clark Jr.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquam consectetur interdum. Mauris nisi justo, accumsan vitae mauris ac, sollicitudin tincidunt lacus. Cras suscipit lorem ex, ac feugiat ipsum rutrum placerat. Maecenas bibendum ipsum non augue consectetur sollicitudin porttitor.');

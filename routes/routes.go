@@ -39,8 +39,5 @@ func Routes(router *gin.Engine) {
 		api.POST("/artist", createArtist)
 		api.POST("/album", createAlbum)
 		api.POST("/song", createSong)
-		api.DELETE("/artist/:id", deleteArtist)
-		api.DELETE("/album/:id", deleteAlbum)
-		api.DELETE("/song/:id", deleteSong)
 	}
 }
