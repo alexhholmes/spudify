@@ -12,15 +12,14 @@ func healthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "running"})
 }
 
-func getPlaylistByID(c *gin.Context) {
-	id := c.Param("id")
-	songs, err := controllers.GetPlaylistItems(id)
+func getAllArtists(c *gin.Context) {
+	artists, err := controllers.GetAllArtists()
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
 		c.JSON(http.StatusOK, "")
 	} else {
-		c.JSON(http.StatusOK, songs)
+		c.JSON(http.StatusOK, artists)
 	}
 }
 

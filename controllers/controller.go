@@ -40,6 +40,13 @@ func ClearUserSession(session string) error {
 	return err
 }
 
+func GetAllArtists() ([]Artist, error) {
+	var artists []Artist
+	err := db.Model(&artists).
+		Select()
+	return artists, err
+}
+
 func GetArtistByID(id string) (*Artist, error) {
 	artist := new(Artist)
 	err := db.Model(artist).

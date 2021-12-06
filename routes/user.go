@@ -60,6 +60,19 @@ func getCurrentUserPlaylists(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
 }
 
+func getPlaylistByID(c *gin.Context) {
+	id := c.Param("id")
+	songs, err := controllers.GetPlaylistItems(id)
+
+	c.Header("Content-Type", "application/json")
+	if err != nil {
+		c.JSON(http.StatusOK, "")
+	} else {
+		c.JSON(http.StatusOK, songs)
+	}
+}
+
+
 func getCurrentUserFollowing(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 

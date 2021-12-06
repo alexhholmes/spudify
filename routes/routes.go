@@ -28,6 +28,7 @@ func Routes(router *gin.Engine) {
 		api.POST("/me/following/:id", followArtist)
 		api.DELETE("/me/following/:id", unfollowArtist)
 
+		api.GET("/artists", getAllArtists)
 		api.GET("/artists/:id", getArtistByID)
 		api.GET("/artists/:id/albums", getArtistAlbums)
 		api.GET("/artists/:id/popular", getArtistPopularSongs)
