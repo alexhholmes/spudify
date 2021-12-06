@@ -18,15 +18,15 @@ func Routes(router *gin.Engine) {
 		api.GET("/logout", logout)
 
 		api.GET("/me/playlists", getCurrentUserPlaylists)
-		//api.POST("/me/playlists", createPlaylist)
-		//api.DELETE("/me/playlists", deletePlaylist)
+		api.POST("/me/playlists", createPlaylist)
+		api.DELETE("/me/playlists", deletePlaylist)
 		api.GET("/playlist/:id", getPlaylistByID)
-		//api.PUT("/playlist/:id", addSongToPlaylist)
-		//api.DELETE("/playlist/:id", deleteSongFromPlaylist)
+		api.PUT("/playlist/:id", addSongToPlaylist)
+		api.DELETE("/playlist/:id", deleteSongFromPlaylist)
 
 		api.GET("/me/following", getCurrentUserFollowing)
-		//api.PUT("/me/following/:id", followArtist)
-		//api.DELETE("/me/following/:id", unfollowArtist)
+		api.POST("/me/following/:id", followArtist)
+		api.DELETE("/me/following/:id", unfollowArtist)
 
 		api.GET("/artists/:id", getArtistByID)
 		api.GET("/artists/:id/albums", getArtistAlbums)
@@ -36,11 +36,11 @@ func Routes(router *gin.Engine) {
 		api.GET("/songs/:id", getSongByID)
 
 		// Admin access only
-		api.PUT("/artist", createArtist)
-		api.PUT("/album", createAlbum)
-		api.PUT("/song", createSong)
-		api.DELETE("/artist", deleteArtist)
-		api.DELETE("/album", deleteAlbum)
-		api.DELETE("/song", deleteSong)
+		api.POST("/artist", createArtist)
+		api.POST("/album", createAlbum)
+		api.POST("/song", createSong)
+		api.DELETE("/artist/:id", deleteArtist)
+		api.DELETE("/album/:id", deleteAlbum)
+		api.DELETE("/song/:id", deleteSong)
 	}
 }
