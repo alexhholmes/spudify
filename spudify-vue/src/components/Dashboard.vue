@@ -5,10 +5,10 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
-            Application
+            Spudify
           </v-list-item-title>
           <v-list-item-subtitle>
-            subtext
+            It's like Spotify, but worse
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -23,6 +23,7 @@
             v-for="item in items"
             :key="item.title"
             link
+            v-on:click="goHome(item.title)"
         >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
@@ -36,8 +37,10 @@
     </v-navigation-drawer>
 
     <div id="content-container">
-      <Home v-if="page === 0" :page-change="pageChange"/>
-      <Artist v-else-if="page === 1"/>
+      <Home v-if="page === 0" :page-change="pageChange" :show-artist="showArtists"/>
+      <Artist v-else-if="page === 1" :page-change="pageChange" :artist="selectedArtist"/>
+      <Album v-else-if="page === 2" :album="selectedAlbum"/>
+      <Playlist v-else-if="page === 3" :playlist="selectedPlaylist"/>
     </div>
 
     <div id="footer-container">
@@ -62,40 +65,82 @@
 import Home from "@/components/pages/Home";
 import Artist from "@/components/pages/Artist";
 import {checkCookie} from "@/util/CookieHelper";
+import Album from "@/components/pages/Album";
+import Playlist from "@/components/pages/Playlist";
 
 export default {
   name: "Dashboard",
-  components: {Artist, Home},
+  components: {Playlist, Album, Artist, Home},
+
   mounted() {
-    if (checkCookie("auth")) {
-      console.log("hi")
+    // TODO: Remove ! for this to work properly
+    if (!checkCookie("auth")) {
+      this.showLoginDialog = false;
+      // TODO: Check if cookie is actually valid
     } else {
       this.showLoginDialog = true;
+
     }
   },
   data () {
     return {
+      showArtists: true,
       page: 0,
       username: "",
       password: "",
       showLoginDialog: false,
       selectedArtist: null,
+      selectedAlbum: null,
+      selectedPlaylist: null,
       items: [
-        { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-        { title: 'Photos', icon: 'mdi-image' },
-        { title: 'About', icon: 'mdi-help-box' },
+        { title: 'Artists', icon: 'mdi-account-music' },
+        { title: 'Playlists', icon: 'mdi-playlist-music' },
+
       ],
       right: null,
     }
   },
 
   methods: {
+    goHome(title) {
+      this.selectedAlbum = null;
+      this.selectedArtist = null;
+      this.selectedPlaylist = null;
+      this.showArtists = title === "Artists";
+      this.pageChange(0, {})
+    },
+
+    attemptLogin () {
+
+      // Request payload
+      let loginData = {
+        username: this.username,
+        password: this.password
+      }
+      console.log(loginData);
+
+      // TODO: Write your login call here and pass in the data object
+      fetch(`/login`, {headers: {}})
+      .then(response => {
+        if (response.statusCode === 200) {
+          // TODO: If successful login
+          this.showLoginDialog = false;
+        } else {
+          // TODO: If unsuccessful
+        }
+      })
+    },
+
     pageChange(pageID, data) {
       this.page = pageID;
       if (pageID === 1) {
         this.selectedArtist = data;
       }
-      console.log(data);
+      else if (pageID === 2) {
+        this.selectedAlbum = data;
+      } else if (pageID === 3) {
+        this.selectedPlaylist = data;
+      }
     }
   }
 
@@ -107,14 +152,13 @@ export default {
     height: 100%;
     width: 100%;
     display: grid;
-    grid-template-columns: auto 100%;
+    grid-template-columns: 10% 90%;
     grid-template-rows: 90% 10%;
     grid-template-areas: "side content"
                          "footer footer";
   }
 
   #content-container {
-    padding: 32px;
     grid-area: content;
     width: 100%;
     background-color: #686868;

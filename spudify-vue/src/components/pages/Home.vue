@@ -1,19 +1,31 @@
 <template>
   <div class="content-page" id="home">
-    <h1>Home</h1>
+    <h1>{{showArtist ? "Artists" : "Playlists"}}</h1>
 
-    <div id="artist-list">
+    <div v-if="showArtist" class="artist-list">
       <div
           class="artist-block"
           v-for="(artist, index) in artists"
-          :key="index"
-          v-on:click="openPageForArtist(artist.name)"
+          :key="index + 'artist'"
+          v-on:click="openPageForArtist(artist)"
       >
         <img src="../../assets/logo.png" class="artist-img" :alt="artist"/>
         <span>{{artist.name}}</span>
       </div>
     </div>
 
+    <!-- Populate the page with playlists from the playlists  -->
+    <div v-else class="artist-list">
+      <div
+          class="artist-block"
+          v-for="(playlist, index) in playlists"
+          :key="index + 'playlist'"
+          v-on:click="openPageForPlaylist(playlist)"
+      >
+        <img src="../../assets/logo.png" class="artist-img" :alt="playlist"/>
+        <span>{{playlist.name}}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,23 +33,45 @@
 export default {
   name: "Home",
   mounted() {
-    fetch(`endpoint`, {headers: {}})
-    .then(response => response.json())
-    .then(data => {
-      this.artists = data;
-    })
+
+    let endpoint;
+
+    // Gets artists or playlists to show depending on the page the user selected
+    if (this.showArtist){
+      endpoint = '/me/playlists';
+    } else {
+      endpoint = 'artists';
+    }
+    fetch(endpoint, {headers: {}})
+        .then(response => response.json())
+        .then(data => {
+          if (this.showArtist) this.artists = data;
+          else this.playlists = data;
+        })
   },
   props: {
-    pageChange: Function
+    pageChange: Function,
+    showArtist: Boolean,
   },
   data () {
     return {
       artists: [
         {
-          name: "x"
+          name: "x",
+          bio: "aasdfasdf",
+          albums: []
         },
         {
-          name: "x"
+          name: "x",
+          bio: "asdfasdf",
+          albums: []
+        },
+      ],
+      playlists: [
+        {
+          id: "aasdfasdf",
+          name: "x",
+          description: "schooop"
         },
       ]
     }
@@ -47,7 +81,10 @@ export default {
 
     openPageForArtist(artist) {
       this.pageChange(1, artist);
-      console.log(artist)
+    },
+
+    openPageForPlaylist(playlist){
+      this.pageChange(3, playlist);
     }
   }
 
@@ -60,6 +97,7 @@ export default {
     margin-bottom: 2rem;
   }
   #home {
+    padding: 32px;
     height: 100%;
     width: 100%;
     display: flex;
@@ -68,14 +106,15 @@ export default {
     justify-content: center;
     grid-row-gap: 1rem;
     grid-column-gap: 1rem;
+    overflow-y: auto;
   }
 
-  #artist-list {
+  .artist-list {
     height: 100%;
     width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-template-rows: auto 1fr; /* NEW */
+    grid-template-rows: auto 1fr;
     grid-column-gap: 1rem;
     grid-row-gap: 4rem;
     align-items: stretch;
