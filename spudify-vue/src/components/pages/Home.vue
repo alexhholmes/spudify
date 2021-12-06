@@ -13,6 +13,8 @@
         <span>{{artist.name}}</span>
       </div>
     </div>
+
+    <!-- Populate the page with playlists from the playlists  -->
     <div v-else class="artist-list">
       <div
           class="artist-block"
@@ -33,6 +35,8 @@ export default {
   mounted() {
 
     let endpoint;
+
+    // Gets artists or playlists to show depending on the page the user selected
     if (this.showArtist){
       endpoint = '/me/playlists';
     } else {

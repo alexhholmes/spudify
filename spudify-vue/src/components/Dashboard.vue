@@ -71,11 +71,15 @@ import Playlist from "@/components/pages/Playlist";
 export default {
   name: "Dashboard",
   components: {Playlist, Album, Artist, Home},
+
   mounted() {
+    // TODO: Remove ! for this to work properly
     if (!checkCookie("auth")) {
-      console.log("userauth");
+      this.showLoginDialog = false;
+      // TODO: Check if cookie is actually valid
     } else {
       this.showLoginDialog = true;
+
     }
   },
   data () {
@@ -116,9 +120,11 @@ export default {
       console.log(loginData);
 
       // TODO: Write your login call here and pass in the data object
-      fetch(`endpoint`, {headers: {}}).then(response => {
+      fetch(`/login`, {headers: {}})
+      .then(response => {
         if (response.statusCode === 200) {
           // TODO: If successful login
+          this.showLoginDialog = false;
         } else {
           // TODO: If unsuccessful
         }
