@@ -2,6 +2,7 @@ package controllers
 
 import (
 	. "example/spudify/models"
+	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 func GetUserPassword(username string) (string, error) {
@@ -101,6 +102,20 @@ func AddSongToPlaylist(playlistID, songID string) error {
 	return err
 }
 
-func CreatePlaylist(session string) error {
+func CreatePlaylist(session, name, description string) error {
+	user := new(User)
+	db.Model(user).
+		Column("id").
+		Where("session = ?", session).Select()
+	playlistID, _ := gonanoid.New()
 
+	playlist := Playlist{
+		ID:          playlistID,
+		Name:        name,
+		Description: description,
+		OwnerID:     user.ID,
+	}
+
+	_, err := db.Model(playlist).Insert()
+	return err
 }

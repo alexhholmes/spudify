@@ -7,4 +7,4 @@ db_name = "spudify"
 
 [Server]
 address = "localhost"
-port = "8080"
+port = "8000"

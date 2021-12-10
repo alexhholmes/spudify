@@ -119,11 +119,14 @@ export default {
       }
       console.log(loginData);
 
-      // TODO: Write your login call here and pass in the data object
-      fetch(`/login`, {headers: {}})
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: 'alex', password: 'password' })
+      };
+      fetch(`localhost:8000/api/login`, requestOptions)
       .then(response => {
         if (response.statusCode === 200) {
-          // TODO: If successful login
           this.showLoginDialog = false;
         } else {
           // TODO: If unsuccessful

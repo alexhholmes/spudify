@@ -46,7 +46,7 @@ func createPlaylist(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	session, _ := c.Cookie("session")
 
-	err := controllers.CreatePlaylist(session)
+	err := controllers.CreatePlaylist(session, c.PostForm("name"), c.PostForm("description"))
 	if err != nil {
 		c.JSON(http.StatusOK, "")
 		return
