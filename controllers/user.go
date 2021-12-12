@@ -2,120 +2,117 @@ package controllers
 
 import (
 	. "example/spudify/models"
+	"github.com/georgysavva/scany/pgxscan"
 	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 func GetUserPassword(username string) (string, error) {
 	var password string
-	err := db.Model((*User)(nil)).
-		Column("password").
-		Where("username = ?", username).
-		Select(&password)
+	query := `
+SELECT password
+FROM users
+WHERE id = $1`
+	err := db.QueryRow(ctx, query, username).Scan(&password)
 	return password, err
 }
 
 func UpdateUserSession(username string, session string) error {
-	_, err := db.Model((*User)(nil)).
-		Set("session = ?", session).
-		Where("username = ?", username).
-		Update()
+	query := `
+UPDATE users
+SET session = $1
+WHERE username = $2`
+	_, err := db.Exec(ctx, query, session, username)
 	return err
 }
 
-func GetCurrentUserPlaylists(sessionID string) ([]Playlist, error) {
-	userID := db.Model((*User)(nil)).
-		Column("id").
-		Where("session = ?", sessionID)
-
-	var playlists []Playlist
-	err := db.Model(&playlists).
-		Where("owner_id IN (?)", userID).
-		Select()
-
+func GetCurrentUserPlaylists(sessionID string) ([]*Playlist, error) {
+	var playlists []*Playlist
+	query := `
+SELECT id, name, description, owner_id
+FROM playlists
+WHERE owner_id IN (
+	SELECT id
+	FROM users
+	WHERE session = $1
+	)`
+	err := pgxscan.Select(ctx, db, &playlists, query, sessionID)
 	return playlists, err
 }
 
-func GetCurrentUserFollowing(sessionID string) ([]Artist, error) {
-	userID := db.Model((*User)(nil)).
-		Column("id").
-		Where("session = ?", sessionID)
-
-	var artists []Artist
-	err := db.Model(&artists).
-		Where("owner_id IN (?)", userID).
-		Select()
-
+func GetCurrentUserFollowing(sessionID string) ([]*Artist, error) {
+	var artists []*Artist
+	query := `
+SELECT id, name, bio
+FROM artists
+WHERE id IN (
+	SELECT artist_id
+	FROM artist_followers
+	WHERE user_id IN (
+		SELECT id
+		FROM users
+		WHERE session = $1
+		)
+	)`
+	err := pgxscan.Select(ctx, db, &artists, query, sessionID)
 	return artists, err
 }
 
 func FollowArtist(sessionID, artistID string) error {
-	type ArtistFollowers struct {
-		UserID      string    `json:"user_id"`
-		ArtistID    string    `json:"artist_id"`
+	userID, err := getUserID(sessionID)
+	if err != nil {
+		return err
 	}
 
-	user := new(User)
-	err := db.Model(user).
-		Column("id").
-		Where("session = ?", sessionID).
-		Select()
+	query := `
+INSERT INTO artist_followers(user_id, artist_id)
+VALUES($1, $2)`
+	_, err = db.Exec(ctx, query, userID, artistID)
 
-	model := ArtistFollowers {
-		UserID:   user.ID,
-		ArtistID: artistID,
-	}
-	_, err = db.Model(model).Insert()
 	return err
 }
 
-func GetPlaylistItems(id string) ([]Song, error) {
-	// For songs_playlists table
-	type SongsPlaylists struct {
-		SongID      string    `json:"song_id"`
-		PlaylistID  string    `json:"playlist_id"`
-	}
-
-	var songs []Song
-	// Select song IDs that match the playlist ID
-	songIDs := db.Model((*SongsPlaylists)(nil)).
-		ColumnExpr("song_id").
-		Where("playlist_id = ?", id)
-	// Select songs that are in the subquery
-	err := db.Model(&songs).
-		Where("song_id IN (?)", songIDs).
-		Select()
-
+func GetPlaylistItems(id string) ([]*Song, error) {
+	var songs []*Song
+	query := `
+SELECT id, name, genre, plays, duration, artist_id, album_id
+FROM songs
+WHERE id IN (
+	SELECT song_id
+	FROM songs_playlists
+	WHERE playlist_id = $1
+	)`
+	err := pgxscan.Select(ctx, db, &songs, query, id)
 	return songs, err
 }
 
 func AddSongToPlaylist(playlistID, songID string) error {
-	type SongsPlaylists struct {
-		SongID      string    `json:"song_id"`
-		PlaylistID  string    `json:"playlist_id"`
-	}
-	songPlaylist := SongsPlaylists{
-		SongID:     songID,
-		PlaylistID: playlistID,
-	}
-
-	_, err := db.Model(songPlaylist).Insert()
+	query := `
+INSERT INTO songs_playlists(song_id, playlist_id)
+VALUES($1, $2)`
+	_, err := db.Exec(ctx, query, songID, playlistID)
 	return err
 }
 
 func CreatePlaylist(session, name, description string) error {
-	user := new(User)
-	db.Model(user).
-		Column("id").
-		Where("session = ?", session).Select()
-	playlistID, _ := gonanoid.New()
-
-	playlist := Playlist{
-		ID:          playlistID,
-		Name:        name,
-		Description: description,
-		OwnerID:     user.ID,
+	ownerID, err := getUserID(session)
+	if err != nil {
+		return err
 	}
 
-	_, err := db.Model(playlist).Insert()
+	id, _ := gonanoid.New()
+	query := `
+INSERT INTO playlists(id, name, description, owner_id)
+VALUES($1, $2, $3, $4)`
+	_, err = db.Exec(ctx, query, id, name, description, ownerID)
 	return err
+}
+
+func getUserID(sessionID string) (string, error) {
+	var userID string
+	query := `
+SELECT id
+FROM users
+WHERE session = $1`
+	err := db.QueryRow(ctx, query, sessionID).Scan(&userID)
+	return userID, err
 }
