@@ -36,10 +36,10 @@ func getCurrentUserPlaylists(c *gin.Context) {
 	session, _ := c.Cookie("session")
 	content, err := controllers.GetCurrentUserPlaylists(session)
 	if err != nil {
-		c.JSON(http.StatusOK, content)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
+	c.JSON(http.StatusOK, content)
 }
 
 func createPlaylist(c *gin.Context) {
@@ -48,10 +48,10 @@ func createPlaylist(c *gin.Context) {
 
 	err := controllers.CreatePlaylist(session, c.PostForm("name"), c.PostForm("description"))
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusBadRequest, "")
 		return
 	}
-	c.JSON(http.StatusBadRequest, "")
+	c.JSON(http.StatusOK, "")
 }
 
 func deletePlaylist(c *gin.Context) {
@@ -85,7 +85,16 @@ func addSongToPlaylist(c *gin.Context) {
 }
 
 func deleteSongFromPlaylist(c *gin.Context) {
-	c.JSON(http.StatusOK, "")
+	id := c.Param("id")
+	songID := c.Param("song_id")
+	err := controllers.DeleteSongFromPlaylist(id, songID)
+
+	c.Header("Content-Type", "application/json")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "")
+	} else {
+		c.JSON(http.StatusOK, "")
+	}
 }
 
 func getCurrentUserFollowing(c *gin.Context) {
@@ -94,10 +103,10 @@ func getCurrentUserFollowing(c *gin.Context) {
 	session, _ := c.Cookie("session")
 	content, err := controllers.GetCurrentUserFollowing(session)
 	if err != nil {
-		c.JSON(http.StatusOK, content)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
 		return
 	}
-	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
+	c.JSON(http.StatusOK, content)
 }
 
 func followArtist(c *gin.Context) {
@@ -107,10 +116,10 @@ func followArtist(c *gin.Context) {
 	session, _ := c.Cookie("session")
 	err := controllers.FollowArtist(session, artistID)
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
 		return
 	}
-	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session"})
+	c.JSON(http.StatusOK, "")
 }
 
 func unfollowArtist(c *gin.Context) {

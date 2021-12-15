@@ -1,17 +1,8 @@
 // Cookie reading function from https://www.w3schools.com/js/js_cookies.asp
-const COOKIE_USER_ID = "xzczxc302"
-const COOKIE_USER_AUTH = "malscmxc2"
-
 function setCookieWithMonthExpiry(name, value) {
     let expiry = new Date();
     expiry.setMonth(expiry.getMonth() + 1); // Adds one month to current date
-    document.cookie = `${name}=${value};expires=${expiry.toUTCString()}`;
-}
-
-// Deletes cookie by forcing expiration
-function deleteCookie(name) {
-    let expiry = "Thu, 01 Jan 1970 00:00:01 GMT"
-    document.cookie = `${name}='';expires=${expiry}`;
+    document.cookie = `${name}=${value};expires=${expiry.toUTCString()};`;
 }
 
 function getCookie(cname) {
@@ -36,10 +27,7 @@ function checkCookie(cookieName) {
 }
 
 export {
-    COOKIE_USER_ID,
-    COOKIE_USER_AUTH,
     setCookieWithMonthExpiry,
     getCookie,
     checkCookie,
-    deleteCookie
 }

@@ -17,7 +17,8 @@ func verifyAdmin(token string) bool {
 func createArtist(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	if !verifyAdmin(c.PostForm("token")) {
-		c.JSON(http.StatusUnauthorized, "")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Bad token"})
+		return
 	}
 
 	id, _ := gonanoid.New()
@@ -27,20 +28,22 @@ func createArtist(c *gin.Context) {
 		ID:   id,
 		Name: name,
 		Bio:  bio,
+		TotalPlays: 0,
 	}
 
-	err := controllers.CreateArtist(artist)
+	artistID, err := controllers.CreateArtist(artist)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "")
 		return
 	}
-	c.JSON(http.StatusOK, "")
+	c.JSON(http.StatusOK, gin.H{"artist_id":artistID})
 }
 
 func createAlbum(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	if !verifyAdmin(c.PostForm("token")) {
-		c.JSON(http.StatusUnauthorized, "")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Bad token"})
+		return
 	}
 
 	id, _ := gonanoid.New()
@@ -55,18 +58,19 @@ func createAlbum(c *gin.Context) {
 	}
 
 
-	err := controllers.CreateAlbum(album)
+	albumID, artistID, err := controllers.CreateAlbum(album)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "")
 		return
 	}
-	c.JSON(http.StatusOK, "")
+	c.JSON(http.StatusOK, gin.H{"album_id":albumID, "artist_id":artistID})
 }
 
 func createSong(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	if !verifyAdmin(c.PostForm("token")) {
-		c.JSON(http.StatusUnauthorized, "")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Bad token"})
+		return
 	}
 
 	id, _ := gonanoid.New()
@@ -86,14 +90,14 @@ func createSong(c *gin.Context) {
 	}
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, "")
+		c.JSON(http.StatusBadRequest, "")
 		return
 	}
 
-	err = controllers.CreateSong(song)
+	songID, err := controllers.CreateSong(song)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "")
 		return
 	}
-	c.JSON(http.StatusOK, "")
+	c.JSON(http.StatusOK, gin.H{"song_id":songID})
 }

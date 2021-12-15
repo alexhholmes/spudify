@@ -6,25 +6,29 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/go-pg/pg/v10"
 )
 
 type App struct {
 	Router *gin.Engine
-	DB     *pgxpool.Pool
+	DB     *pg.DB
 }
 
 func (a *App) Initialize(address, port, username, password, dbName string) {
+	// Set db configs
+	dbOptions := &pg.Options {
+		User: username,
+		Password: password,
+		Addr: address + ":" + port,
+		Database: dbName,
+	}
+	a.DB = pg.Connect(dbOptions)
+
+	// Check if database is running
 	ctx := context.Background()
-	dbURL := "postgres://" + username + ":" + password + "@" + address + ":" + port + "/" + dbName
-
-	dbpool, err := pgxpool.Connect(ctx, dbURL)
-	a.DB = dbpool
-
-	if err != nil {
+	if err := a.DB.Ping(ctx); err != nil {
 		log.Panicf("Failed to connect to database: %s", err)
 	}
-	defer a.DB.Close()
 	log.Printf("Connected to database")
 
 	a.Router = gin.Default()

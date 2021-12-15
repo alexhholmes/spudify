@@ -4,6 +4,7 @@ type Artist struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Bio       string    `json:"bio"`
+	TotalPlays int      `json:"total_plays"`
 }
 
 type Album struct {

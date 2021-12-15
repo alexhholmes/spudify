@@ -9,7 +9,7 @@
           :key="index + 'artist'"
           v-on:click="openPageForArtist(artist)"
       >
-        <img src="../../assets/logo.png" class="artist-img" :alt="artist"/>
+        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/artist_images/${artist.id}.jpg`" class="artist-img" :alt="artist"/>
         <span>{{artist.name}}</span>
       </div>
     </div>
@@ -22,7 +22,7 @@
           :key="index + 'playlist'"
           v-on:click="openPageForPlaylist(playlist)"
       >
-        <img src="../../assets/logo.png" class="artist-img" :alt="playlist"/>
+        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/playlist_images/${playlist.id}.jpg`" class="artist-img" :alt="playlist"/>
         <span>{{playlist.name}}</span>
       </div>
     </div>
@@ -33,21 +33,12 @@
 export default {
   name: "Home",
   mounted() {
-
-    let endpoint;
-
-    // Gets artists or playlists to show depending on the page the user selected
-    if (this.showArtist){
-      endpoint = '/me/playlists';
-    } else {
-      endpoint = 'artists';
+    this.getData();
+  },
+  watch: {
+    showArtist: function() { // watch it
+      this.getData();
     }
-    fetch(endpoint, {headers: {}})
-        .then(response => response.json())
-        .then(data => {
-          if (this.showArtist) this.artists = data;
-          else this.playlists = data;
-        })
   },
   props: {
     pageChange: Function,
@@ -78,6 +69,27 @@ export default {
   },
 
   methods: {
+
+    getData()  {
+      let endpoint;
+
+      // Gets artists or playlists to show depending on the page the user selected
+      if (this.showArtist){
+        endpoint = 'http://localhost:8000/api/artists';
+      } else {
+        endpoint = 'http://localhost:8000/api/me/playlists';
+      }
+
+      fetch(endpoint, {headers:  {
+        }})
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            console.log("fetch  data"  + endpoint)
+            if (this.showArtist) this.artists = data;
+            else this.playlists = data;
+          })
+    },
 
     openPageForArtist(artist) {
       this.pageChange(1, artist);
@@ -135,6 +147,7 @@ export default {
     width: 150px;
     border-radius: 50%;
     object-fit: scale-down;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
   }
 
 </style>

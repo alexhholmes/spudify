@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <title>Spudify Admin Page</title>
+    <link href="admin/css/stylesheet.css" rel="stylesheet">
+</head>
+<body>
+<div class="div_forms">
+    <form action="/api/artist" onsubmit="this.submit(); this.reset(); return false;" method="post">
+        <h1>New Artist</h1>
+        <ul>
+            <li>
+                <label for="artist_name">Artist Name:</label>
+                <input type="text" id="artist_name" name="name">
+            </li>
+            <li>
+                <label for="artist_bio">Artist Bio:</label>
+                <input type="text" id="artist_bio" name="bio">
+            </li>
+            <li>
+                <label for="admin_token1">Admin Token:</label>
+                <input type="password" id="admin_token1" name="token">
+            </li>
+            <li class="button">
+                <button type="submit">Submit</button>
+            </li>
+        </ul>
+    </form>
+
+    <form action="/api/album" onsubmit="this.submit(); this.reset(); return false;" method="post">
+        <h1>New Album</h1>
+        <ul>
+            <li>
+                <label for="album_title">Album Title:</label>
+                <input type="text" id="album_title" name="title">
+            </li>
+            <li>
+                <label for="album_genre">Genre:</label>
+                <input type="text" id="album_genre" name="genre">
+            </li>
+            <li>
+                <label for="album_artist_id">Artist ID:</label>
+                <input type="text" id="album_artist_id" name="artist_id">
+            </li>
+            <li>
+                <label for="admin_token2">Admin Token:</label>
+                <input type="password" id="admin_token2" name="token">
+            </li>
+            <li class="button">
+                <button type="submit">Submit</button>
+            </li>
+        </ul>
+    </form>
+
+    <form action="/api/song" onsubmit="this.submit(); this.reset(); return false;" method="post">
+        <h1>New Song</h1>
+        <ul>
+            <li>
+                <label for="song_name">Song Name:</label>
+                <input type="text" id="song_name" name="name">
+            </li>
+            <li>
+                <label for="song_genre">Genre:</label>
+                <input type="text" id="song_genre" name="genre">
+            </li>
+            <li>
+                <label for="song_duration">Duration:</label>
+                <input type="text" id="song_duration" name="duration">
+            </li>
+            <li>
+                <label for="song_artist_id">Artist ID:</label>
+                <input type="text" id="song_artist_id" name="artist_id">
+            </li>
+            <li>
+                <label for="song_album_id">Album ID:</label>
+                <input type="text" id="song_album_id" name="album_id">
+            </li>
+            <li>
+                <label for="admin_token3">Admin Token:</label>
+                <input type="password" id="admin_token3" name="token">
+            </li>
+            <li class="button">
+                <button type="submit">Submit</button>
+            </li>
+        </ul>
+    </form>
+</div>
+</body>
+</html>

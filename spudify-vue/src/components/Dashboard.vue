@@ -8,7 +8,7 @@
             Spudify
           </v-list-item-title>
           <v-list-item-subtitle>
-            It's like Spotify, but worse
+            Spotify but worse...
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -67,19 +67,22 @@ import Artist from "@/components/pages/Artist";
 import {checkCookie} from "@/util/CookieHelper";
 import Album from "@/components/pages/Album";
 import Playlist from "@/components/pages/Playlist";
+import {setCookieWithMonthExpiry} from "../util/CookieHelper";
 
 export default {
   name: "Dashboard",
   components: {Playlist, Album, Artist, Home},
 
   mounted() {
+
+    setCookieWithMonthExpiry("session", "bruh");
     // TODO: Remove ! for this to work properly
-    if (!checkCookie("auth")) {
+    if (!checkCookie("session")) {
       this.showLoginDialog = false;
       // TODO: Check if cookie is actually valid
     } else {
-      this.showLoginDialog = true;
-
+      // TODO make true
+      this.showLoginDialog = false;
     }
   },
   data () {
@@ -89,13 +92,12 @@ export default {
       username: "",
       password: "",
       showLoginDialog: false,
-      selectedArtist: null,
+      selectedArtist: false,
       selectedAlbum: null,
       selectedPlaylist: null,
       items: [
         { title: 'Artists', icon: 'mdi-account-music' },
         { title: 'Playlists', icon: 'mdi-playlist-music' },
-
       ],
       right: null,
     }
@@ -130,6 +132,8 @@ export default {
           this.showLoginDialog = false;
         } else {
           // TODO: If unsuccessful
+          this.username = "";
+          this.password = "";
         }
       })
     },

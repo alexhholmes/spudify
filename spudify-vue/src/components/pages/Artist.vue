@@ -1,12 +1,11 @@
 <template>
   <div class="content-page" id="artist">
     <div id="artist-heading">
-      <img id="artist-img" src="../../assets/logo.png" alt="" style="background-color: black"/>
+      <img id="artist-img" :src="`https://spudify.nyc3.digitaloceanspaces.com/artist_images/${artist.id}.jpg`" alt="" style="background-color: black"/>
       <div id="artist-info">
         <span>Artist</span>
         <h1>{{artist.name}}</h1>
         <span>{{artist.bio}}</span>
-        <span>{{artist.albums.length}} albums</span>
       </div>
     </div>
     <div id="album-list">
@@ -16,7 +15,7 @@
           :key="index"
           v-on:click="openPageForAlbum(album)"
       >
-        <img src="../../assets/logo.png" class="artist-img" :alt="artist"/>
+        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/album_images/${album.id}.jpg`" class="artist-img" :alt="artist"/>
         <span>{{album.title}}</span>
       </div>
     </div>
@@ -29,7 +28,7 @@ export default {
   name: "Artist",
   mounted() {
 
-    fetch(`/albums/${this.artist.id}`, {headers: {}})
+    fetch(`http://localhost:8000/api/artists/${this.artist.id}/albums`, {headers: {}})
         .then(response => response.json())
         .then(data => {
           this.albums = data;

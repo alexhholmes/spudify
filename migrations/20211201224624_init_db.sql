@@ -5,7 +5,8 @@ CREATE TABLE artists (
     id varchar(22),
     PRIMARY KEY (id),
     name varchar(64) NOT NULL,
-    bio varchar(300)
+    bio varchar(300),
+    total_plays int
 );
 
 CREATE TABLE albums (
@@ -110,6 +111,23 @@ CREATE VIEW v_top_songs_each_artist AS
         ) ranks
     WHERE song_rank <= 5;
 
+-- Procedures
+CREATE PROCEDURE increment_plays(song_id varchar(22))
+LANGUAGE SQL
+AS $$
+   UPDATE songs SET plays = plays + 1 WHERE id = song_id;
+$$;
+
+CREATE PROCEDURE update_artist_total_plays(aid varchar(22))
+LANGUAGE sql
+AS $$
+    UPDATE artists
+    SET total_plays = (SELECT SUM(plays)
+                       FROM songs
+                       WHERE artist_id = aid)
+    WHERE id = aid;
+$$;
+
 -- Initial DB data
 INSERT INTO artists (id, name, bio) VALUES ('01aC2ikO4Xgb2LUpf9JfKp', 'Gary Clark Jr.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquam consectetur interdum. Mauris nisi justo, accumsan vitae mauris ac, sollicitudin tincidunt lacus. Cras suscipit lorem ex, ac feugiat ipsum rutrum placerat. Maecenas bibendum ipsum non augue consectetur sollicitudin porttitor.');
 INSERT INTO artists (id, name, bio) VALUES ('0K1q0nXQ8is36PzOKAMbNe', 'Spoon', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquam consectetur interdum. Mauris nisi justo, accumsan vitae mauris ac, sollicitudin tincidunt lacus. Cras suscipit lorem ex, ac feugiat ipsum rutrum placerat. Maecenas bibendum ipsum non augue consectetur sollicitudin porttitor.');
@@ -141,7 +159,6 @@ INSERT INTO albums (id, title, genre, artist_id) VALUES ('5gRwx5vpeXUA75GmuqwByn
 INSERT INTO albums (id, title, genre, artist_id) VALUES ('4jLUg6wWnd0vB4CcPSPS6Q', 'Gary Clark Jr. Live', 'rock', '01aC2ikO4Xgb2LUpf9JfKp');
 INSERT INTO albums (id, title, genre, artist_id) VALUES ('0YCTY6KpkPWp2etKx9ZNyM', 'Blak and Blu', 'rock', '01aC2ikO4Xgb2LUpf9JfKp');
 INSERT INTO albums (id, title, genre, artist_id) VALUES ('1diWV7CGhtMjBlufPl9boS', 'The Bright Lights', 'rock', '01aC2ikO4Xgb2LUpf9JfKp');
-INSERT INTO albums (id, title, genre, artist_id) VALUES ('477gzTVWjJWGc7kFTvzwma', 'Ga Ga Ga Ga Ga (2017 Remaster)', 'rock', '0K1q0nXQ8is36PzOKAMbNe');
 INSERT INTO albums (id, title, genre, artist_id) VALUES ('1OPdyA7ZW7zIZEmSqThRGy', 'Hot Thoughts', 'rock', '0K1q0nXQ8is36PzOKAMbNe');
 INSERT INTO albums (id, title, genre, artist_id) VALUES ('2qGq0iQFEjrcDprsd7QSFx', 'They Want My Soul', 'rock', '0K1q0nXQ8is36PzOKAMbNe');
 INSERT INTO albums (id, title, genre, artist_id) VALUES ('33bmbJ5x8g1IEMEGJ8ul1g', 'Transference', 'rock', '0K1q0nXQ8is36PzOKAMbNe');

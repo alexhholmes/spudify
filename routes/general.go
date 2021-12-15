@@ -14,10 +14,12 @@ func healthCheck(c *gin.Context) {
 
 func getAllArtists(c *gin.Context) {
 	artists, err := controllers.GetAllArtists()
+	// TODO
+	c.SetCookie("session", "bruh", 0, "/", "localhost:8000", false, true)
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusInternalServerError, "")
 	} else {
 		c.JSON(http.StatusOK, artists)
 	}
@@ -29,7 +31,7 @@ func getArtistByID(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusInternalServerError, "")
 	} else {
 		c.JSON(http.StatusOK, artist)
 	}
@@ -41,7 +43,7 @@ func getArtistAlbums(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusInternalServerError, "")
 	} else {
 		c.JSON(http.StatusOK, albums)
 	}
@@ -53,7 +55,7 @@ func getArtistPopularSongs(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusInternalServerError, "")
 	} else {
 		c.JSON(http.StatusOK, songs)
 	}
@@ -65,7 +67,7 @@ func getAlbumByID(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusInternalServerError, "")
 	} else {
 		c.JSON(http.StatusOK, album)
 	}
@@ -77,7 +79,7 @@ func getAlbumSongs(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusInternalServerError, "")
 	} else {
 		c.JSON(http.StatusOK, songs)
 	}
@@ -89,8 +91,20 @@ func getSongByID(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
-		c.JSON(http.StatusOK, "")
+		c.JSON(http.StatusInternalServerError, "")
 	} else {
 		c.JSON(http.StatusOK, song)
+	}
+}
+
+func updatePlays(c *gin.Context) {
+	id := c.Param("id")
+	err := controllers.UpdatePlays(id)
+
+	c.Header("Content-Type", "application/json")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "")
+	} else {
+		c.JSON(http.StatusOK, "")
 	}
 }
