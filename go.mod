@@ -3,6 +3,7 @@ module example/spudify
 go 1.16
 
 require (
+	github.com/aws/aws-sdk-go v1.42.23
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.7.7

@@ -1,7 +1,7 @@
 <template>
   <div id="album">
     <div id="album-heading">
-      <img id="album-img" :src="`https://spudify.nyc3.digitaloceanspaces.com/album_images/${album.id}.jpg`" alt="" style="background-color: black"/>
+      <img id="album-img" :src="`https://spudify.nyc3.digitaloceanspaces.com/album_images/${album.id}.jpg`" @error="$event.target.src=`https://spudify.nyc3.digitaloceanspaces.com/album_images/default.jpg`"  alt="" style="background-color: black"/>
       <div id="album-info">
         <span>Album</span>
         <h1>{{album.title}}</h1>
@@ -24,7 +24,7 @@
       >
         <div class="song-info">
           <span class="song-counter">{{index + 1}}</span>
-          <img class="song-img" :src="`https://spudify.nyc3.digitaloceanspaces.com/album_images/${album.id}.jpg`" alt="song">
+          <img class="song-img" :src="`https://spudify.nyc3.digitaloceanspaces.com/album_images/${album.id}.jpg`" @error="$event.target.src=`https://spudify.nyc3.digitaloceanspaces.com/album_images/default.jpg`"  alt="song">
           <span>{{song.name}}</span>
           <span class="artist-name">{{artistName}}</span>
         </div>

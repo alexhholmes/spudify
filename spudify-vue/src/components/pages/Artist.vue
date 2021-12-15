@@ -1,7 +1,7 @@
 <template>
   <div class="content-page" id="artist">
     <div id="artist-heading">
-      <img id="artist-img" :src="`https://spudify.nyc3.digitaloceanspaces.com/artist_images/${artist.id}.jpg`" alt="" style="background-color: black"/>
+      <img id="artist-img" :src="`https://spudify.nyc3.digitaloceanspaces.com/artist_images/${artist.id}.jpg`" @error="$event.target.src=`https://spudify.nyc3.digitaloceanspaces.com/artist_images/default.jpg`" alt="" style="background-color: black"/>
       <div id="artist-info">
         <span>Artist</span>
         <h1>{{artist.name}}</h1>
@@ -15,7 +15,7 @@
           :key="index"
           v-on:click="openPageForAlbum(album)"
       >
-        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/album_images/${album.id}.jpg`" class="artist-img" :alt="artist"/>
+        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/album_images/${album.id}.jpg`" @error="$event.target.src=`https://spudify.nyc3.digitaloceanspaces.com/album_images/default.jpg`"  class="artist-img" :alt="artist"/>
         <span>{{album.title}}</span>
       </div>
     </div>

@@ -36,5 +36,6 @@ func (a *App) Initialize(address, port, username, password, dbName string) {
 }
 
 func (a *App) Run(address, port string) {
+	routes.Init_s3()
 	log.Fatal(a.Router.Run(address + ":" + port))
 }

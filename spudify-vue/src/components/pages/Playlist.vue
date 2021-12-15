@@ -94,6 +94,9 @@ export default {
   },
 
   methods: {
+    add_song: function() {
+
+    },
 
     millisecondsToTime(milli) {
       let milliseconds = milli % 1000;

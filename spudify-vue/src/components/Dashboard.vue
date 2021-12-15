@@ -54,7 +54,7 @@
       <div id="login-dialog-container">
 
         <v-text-field label="username" v-model="username"/>
-        <v-text-field label="password" v-model="password"/>
+        <v-text-field type="password" label="password" v-model="password"/>
         <v-btn color="#1DB954" v-on:click="attemptLogin">login</v-btn>
       </div>
     </v-dialog>

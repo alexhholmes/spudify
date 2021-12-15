@@ -2,13 +2,34 @@ package routes
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 
 	"example/spudify/controllers"
 	"example/spudify/models"
 	"github.com/gin-gonic/gin"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
+
+var s3Client *s3.S3
+
+func Init_s3() {
+	key := os.Getenv("OIM5L4D7FVTTHNNOVB4R")
+	secret := os.Getenv("634ishVkot21vbhJ6AAd75TwXYtbKgtmM2Pofxyd/K0")
+
+	s3Config := &aws.Config{
+		Credentials: credentials.NewStaticCredentials(key, secret, ""),
+		Endpoint:    aws.String("https://nyc3.digitaloceanspaces.com"),
+		Region:      aws.String("us-east-1"),
+	}
+
+	newSession := session.New(s3Config)
+	s3Client = s3.New(newSession)
+}
 
 func verifyAdmin(token string) bool {
 	return token == "password"

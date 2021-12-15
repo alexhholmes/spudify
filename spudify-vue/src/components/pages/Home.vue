@@ -9,7 +9,7 @@
           :key="index + 'artist'"
           v-on:click="openPageForArtist(artist)"
       >
-        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/artist_images/${artist.id}.jpg`" class="artist-img" :alt="artist"/>
+        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/artist_images/${artist.id}.jpg`" @error="$event.target.src=`https://spudify.nyc3.digitaloceanspaces.com/artist_images/default.jpg`" class="artist-img" :alt="artist"/>
         <span>{{artist.name}}</span>
       </div>
     </div>
@@ -148,6 +148,7 @@ export default {
     border-radius: 50%;
     object-fit: scale-down;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
+    object-fit: cover;
   }
 
   .playlist-img {
@@ -155,6 +156,7 @@ export default {
     width: 150px;
     object-fit: scale-down;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
+    object-fit: cover;
   }
 
 </style>
