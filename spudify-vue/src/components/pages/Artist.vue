@@ -5,7 +5,7 @@
       <div id="artist-info">
         <span>Artist</span>
         <h1>{{artist.name}}</h1>
-        <span>{{artist.bio}}</span>
+        <span>Bio: {{artist.bio}}</span>
       </div>
     </div>
     <div id="album-list">
@@ -121,7 +121,6 @@ export default {
   .artist-img {
     height: 150px;
     width: 150px;
-    border-radius: 50%;
     object-fit: scale-down;
   }
 </style>

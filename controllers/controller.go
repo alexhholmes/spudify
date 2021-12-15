@@ -17,6 +17,7 @@ func InitDB(dbConnection *pg.DB) {
 func GetAllArtists() ([]Artist, error) {
 	var artists []Artist
 	err := db.Model(&artists).
+		Order("name ASC").
 		Select()
 	return artists, err
 }

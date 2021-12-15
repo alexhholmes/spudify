@@ -22,7 +22,7 @@
           :key="index + 'playlist'"
           v-on:click="openPageForPlaylist(playlist)"
       >
-        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/playlist_images/${playlist.id}.jpg`" class="artist-img" :alt="playlist"/>
+        <img :src="`https://spudify.nyc3.digitaloceanspaces.com/playlist_images/${playlist.id}.jpg`" class="playlist-img" :alt="playlist"/>
         <span>{{playlist.name}}</span>
       </div>
     </div>
@@ -146,6 +146,13 @@ export default {
     height: 150px;
     width: 150px;
     border-radius: 50%;
+    object-fit: scale-down;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
+  }
+
+  .playlist-img {
+    height: 150px;
+    width: 150px;
     object-fit: scale-down;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
   }

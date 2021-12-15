@@ -67,22 +67,19 @@ import Artist from "@/components/pages/Artist";
 import {checkCookie} from "@/util/CookieHelper";
 import Album from "@/components/pages/Album";
 import Playlist from "@/components/pages/Playlist";
-import {setCookieWithMonthExpiry} from "../util/CookieHelper";
 
 export default {
   name: "Dashboard",
   components: {Playlist, Album, Artist, Home},
 
   mounted() {
-
-    setCookieWithMonthExpiry("session", "bruh");
     // TODO: Remove ! for this to work properly
-    if (!checkCookie("session")) {
+    if (checkCookie("session")) {
       this.showLoginDialog = false;
       // TODO: Check if cookie is actually valid
     } else {
       // TODO make true
-      this.showLoginDialog = false;
+      this.showLoginDialog = true;
     }
   },
   data () {
@@ -123,12 +120,13 @@ export default {
 
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: 'alex', password: 'password' })
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "username=" + loginData.username + "&password=" + loginData.password
       };
-      fetch(`localhost:8000/api/login`, requestOptions)
+      fetch(`http://localhost:8000/api/login`, requestOptions)
       .then(response => {
-        if (response.statusCode === 200) {
+        console.log(response.status)
+        if (response.ok) {
           this.showLoginDialog = false;
         } else {
           // TODO: If unsuccessful
@@ -178,6 +176,7 @@ export default {
 
   #login-dialog-container {
     padding: 16px;
+    background-color: #2f2f2f;
   }
 
 </style>

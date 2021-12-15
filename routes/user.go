@@ -12,6 +12,11 @@ func login(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	username := c.PostForm("username")
 	password := c.PostForm("password")
+	type LOGIN struct{
+		USER string `json:"user" binding:"required"`
+		PASSWORD string `json:"password" binding:"required"`
+	}
+
 
 	// Verify username and password
 	expectedPassword, err := controllers.GetUserPassword(username)

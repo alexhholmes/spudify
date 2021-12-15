@@ -14,8 +14,6 @@ func healthCheck(c *gin.Context) {
 
 func getAllArtists(c *gin.Context) {
 	artists, err := controllers.GetAllArtists()
-	// TODO
-	c.SetCookie("session", "bruh", 0, "/", "localhost:8000", false, true)
 
 	c.Header("Content-Type", "application/json")
 	if err != nil {
