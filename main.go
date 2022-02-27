@@ -16,6 +16,8 @@ func init() {
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Panicf("Failed to read config file: %s", err)
+		log.Panicf("helloworld");
+
 	}
 }
 
